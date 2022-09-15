@@ -1,9 +1,10 @@
 import 'dart:convert';
+import '../candlesticks.dart';
 import 'package:flutter/material.dart';
-import 'package:candlesticks/candlesticks.dart';
-import 'package:stock_app/model/candle_model.dart';
 import 'package:stock_app/services/candle_service.dart';
-import '../model/data_map.dart';
+import '../models/data_map.dart';
+import '../widgets/candle_sticks.dart';
+
 
 
 class Home extends StatefulWidget {
@@ -16,13 +17,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<Candle> candles = [];
-  bool themeIsDark = false;
 
   @override
   void initState() {
+    getData();
     super.initState();
-      getData();
   }
+
+  //========== INSTAGRAM: @lumberjack_programmer ===========//
+  //========== GITHUB: @lumberjack-programmer =============//
+  //================== FOLLOW FOR MORE ===================//
 
 
   Future<void> getData() async {
@@ -30,9 +34,12 @@ class _HomeState extends State<Home> {
     var data = await candleService.fetchCandles();
     var test = DataMap.fromJson(jsonDecode(data.body));
 
-    test.data.forEach((key, value) => candles.add(Candle(date: DateTime.parse(key), high: double.parse(value['2. high']),
-        low: double.parse(value['3. low']), open: double.parse(value['1. open']), close: double.parse(value['4. close']),
-        volume: double.parse(value['5. volume']))));
+    setState(() {
+      test.data.forEach((key, value) => candles.add(Candle(date: DateTime.parse(key), high: double.parse(value['2. high']),
+          low: double.parse(value['3. low']), open: double.parse(value['1. open']), close: double.parse(value['4. close']),
+          volume: double.parse(value['5. volume']))));
+    });
+
   }
 
   @override
@@ -45,22 +52,19 @@ class _HomeState extends State<Home> {
           backgroundColor: Color(0xff33032f),
           actions: [
             IconButton(
+              splashRadius: 20.0,
               onPressed: () {
-                setState(() {
-                  themeIsDark = !themeIsDark;
-                });
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
               },
               icon: Icon(
-                themeIsDark
-                    ? Icons.wb_sunny_sharp
-                    : Icons.nightlight_round_outlined,
+                Icons.update,
               ),
             )
           ],
         ),
         backgroundColor: Color(0xff170312),
 
-        body: Center(
+        body: candles.isEmpty ? const Center(child: CircularProgressIndicator())  : Center(
           child: Candlesticks(
             candles: candles,
           ),

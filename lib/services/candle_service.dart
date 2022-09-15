@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'dart:ffi';
-import 'package:flutter/material.dart';
-import 'package:candlesticks/candlesticks.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:stock_app/config/config.dart';
 
@@ -18,11 +15,5 @@ class CandleService {
     } else {
       throw Exception('Failed to fetch data');
     }
-
-    // return (jsonDecode(response.body) as List<dynamic>)
-    //     .map((e) => Candle.fromJson(e))
-    //     .toList()
-    //     .reversed
-    //     .toList();
   }
 }
